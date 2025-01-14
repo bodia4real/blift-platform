@@ -54,23 +54,28 @@ public class AuthenticationService {
     }
 
     // Login logic
+    // Login logic
     public String login(AuthRequest request) {
-        if (request.getRole().equalsIgnoreCase("USER")) {
-            User user = userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+        // Check if the email belongs to a USER
+        var userOpt = userRepository.findByEmail(request.getEmail());
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
             if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 throw new IllegalArgumentException("Invalid email or password.");
             }
             return "User logged in successfully!";
-        } else if (request.getRole().equalsIgnoreCase("CONSULTANT")) {
-            Consultant consultant = consultantRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+        }
+
+        // Check if the email belongs to a CONSULTANT
+        var consultantOpt = consultantRepository.findByEmail(request.getEmail());
+        if (consultantOpt.isPresent()) {
+            Consultant consultant = consultantOpt.get();
             if (!passwordEncoder.matches(request.getPassword(), consultant.getPassword())) {
                 throw new IllegalArgumentException("Invalid email or password.");
             }
             return "Consultant logged in successfully!";
-        } else {
-            throw new IllegalArgumentException("Invalid role.");
         }
+
+        throw new IllegalArgumentException("Email not found. Please register.");
     }
 }

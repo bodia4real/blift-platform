@@ -1,7 +1,7 @@
 package com.blift.backend.controllers;
 
-import com.blift.backend.dto.RegisterRequest;
 import com.blift.backend.dto.AuthRequest;
+import com.blift.backend.dto.RegisterRequest;
 import com.blift.backend.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
