@@ -6,6 +6,7 @@ import com.blift.backend.entities.User;
 import com.blift.backend.entities.Consultant;
 import com.blift.backend.repositories.UserRepository;
 import com.blift.backend.repositories.ConsultantRepository;
+import com.blift.backend.validations.AuthValidation;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +16,23 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final ConsultantRepository consultantRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthValidation authValidation;  // Inject validation class
 
-    public AuthenticationService(UserRepository userRepository, ConsultantRepository consultantRepository, PasswordEncoder passwordEncoder) {
+    public AuthenticationService(UserRepository userRepository,
+                                 ConsultantRepository consultantRepository,
+                                 PasswordEncoder passwordEncoder,
+                                 AuthValidation authValidation) {
         this.userRepository = userRepository;
         this.consultantRepository = consultantRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authValidation = authValidation;
     }
 
     // Registration logic
     public String register(RegisterRequest request) {
+        // Delegate validation to the AuthValidation class
+        authValidation.validateRegisterRequest(request);
+
         if (request.getRole().equalsIgnoreCase("USER")) {
             if (userRepository.findByEmail(request.getEmail()).isPresent()) {
                 throw new IllegalArgumentException("Email already registered as User.");
@@ -38,9 +47,6 @@ public class AuthenticationService {
             if (consultantRepository.findByEmail(request.getEmail()).isPresent()) {
                 throw new IllegalArgumentException("Email already registered as Consultant.");
             }
-            if (request.getLicenseNumber() == null || request.getLicenseNumber().isBlank()) {
-                throw new IllegalArgumentException("License number is required for consultants.");
-            }
             Consultant consultant = new Consultant();
             consultant.setEmail(request.getEmail());
             consultant.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -54,8 +60,10 @@ public class AuthenticationService {
     }
 
     // Login logic
-    // Login logic
     public String login(AuthRequest request) {
+        // Delegate validation to the AuthValidation class
+        authValidation.validateLoginRequest(request);
+
         // Check if the email belongs to a USER
         var userOpt = userRepository.findByEmail(request.getEmail());
         if (userOpt.isPresent()) {

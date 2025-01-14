@@ -16,21 +16,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        try {
-            String message = authenticationService.register(request);
-            return ResponseEntity.ok(message);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String message = authenticationService.register(request);
+        return ResponseEntity.ok(message);
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthRequest request) {
-        try {
-            String message = authenticationService.login(request);
-            return ResponseEntity.ok(message);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String message = authenticationService.login(request);
+        return ResponseEntity.ok(message);
     }
 }
