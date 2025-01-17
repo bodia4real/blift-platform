@@ -34,11 +34,11 @@ const InputWrapper = styled.div`
   }
 
   input:focus {
-    border: 1px solid var(--grey-hovered);
+    border: 1px solid var(--grey-focused);
   }
 
   input:focus + label {
-    color: var(--grey-hovered);
+    color: var(--grey-focused);
   }
 
   @media (min-width: 768px) {
