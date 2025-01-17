@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import logo from "../../assets/logo.svg";
+import Login from "./Log In/Login";
 
 const Auth = () => {
   return (
@@ -8,6 +9,7 @@ const Auth = () => {
       <header>
         <img src={logo} alt="Logo of Blift" />
       </header>
+      <Login />
     </AuthWrapper>
   );
 };
