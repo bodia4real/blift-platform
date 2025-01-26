@@ -20,7 +20,7 @@ public class AuthController {
         return ResponseEntity.ok(message);
     }
 
-    @PostMapping("/login")
+    @PostMapping
     public ResponseEntity<String> login(@RequestBody AuthRequest request) {
         String message = authenticationService.login(request);
         return ResponseEntity.ok(message);
