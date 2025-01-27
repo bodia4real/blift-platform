@@ -3,6 +3,8 @@ package com.blift.backend.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,4 +34,8 @@ public class Consultant {
     private String licenseNumber;  // License number (must be unique)
 
     private String location;  // Optional field for location
+
+    private boolean enabled = false; // Email verification status
+    private String verificationCode;
+    private LocalDateTime codeExpiryTime; // Expiry time for the code
 }
