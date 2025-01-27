@@ -1,28 +1,32 @@
-import styled from "styled-components";
-import Auth from "./components/Authentication/Auth";
+import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import RootLayout from "./pages/Root";
+import HomePage from "./pages/Home";
+import AuthLayout from "./pages/Auth/Auth";
+import SignUp from "./pages/Auth/SignUp";
+import Login from "./pages/Auth/Login";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    id: "root",
+    children: [
+      { index: true, element: <HomePage /> },
+      {
+        path: "auth",
+        element: <AuthLayout />,
+        children: [
+          { index: true, element: <Login /> },
+          { path: "register", element: <SignUp /> },
+        ],
+      },
+    ],
+  },
+]);
 
 function App() {
-  return (
-    <Container>
-      <Auth />
-    </Container>
-  );
+  return <RouterProvider router={router} />;
 }
-
-const Container = styled.div`
-  padding: 0px 24px;
-  margin: 0px auto;
-  max-width: 760px;
-  min-height: 100vh;
-  height: 100%;
-  width: 100%;
-
-  @media (min-width: 768px) {
-    padding: 46px;
-    max-width: 100%;
-    display: grid;
-    place-items: center;
-  }
-`;
 
 export default App;
