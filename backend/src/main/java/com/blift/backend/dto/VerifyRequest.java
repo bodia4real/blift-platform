@@ -3,7 +3,7 @@ package com.blift.backend.dto;
 import lombok.Data;
 
 @Data
-public class AuthRequest {
+public class VerifyRequest {
     private String email;
-    private String password;
+    private String verificationCode;
 }

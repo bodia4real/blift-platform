@@ -1,15 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 import logo from "../../assets/logo.svg";
-import Login from "./Log In/Login";
+import { Outlet } from "react-router-dom";
 
-const Auth = () => {
+const AuthLayout = () => {
   return (
     <AuthWrapper>
       <header>
         <img src={logo} alt="Logo of Blift" />
       </header>
-      <Login />
+      <Outlet />
     </AuthWrapper>
   );
 };
@@ -31,4 +31,4 @@ const AuthWrapper = styled.div`
   }
 `;
 
-export default Auth;
+export default AuthLayout;

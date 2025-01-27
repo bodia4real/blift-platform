@@ -3,6 +3,8 @@ package com.blift.backend.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter                    // Generates getters for all fields
 @Setter                    // Generates setters for all fields
 @NoArgsConstructor         // Generates a no-argument constructor
@@ -27,4 +29,10 @@ public class User {
 
     private String profilePicture;  // Optional field for profile picture URL
     private String location;         // Optional field for location
+
+    private boolean enabled = false; // Email verification status
+
+    private String verificationCode;
+
+    private LocalDateTime codeExpiryTime; // Expiry time for the code
 }
