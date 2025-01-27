@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
-const FormFooter = ({ question, action }) => {
+const FormFooter = ({ question, action, navigationLink }) => {
   return (
     <FooterWrapper>
       {question}
-      <span>{action}</span>
+      <Link to={navigationLink}>{action}</Link>
     </FooterWrapper>
   );
 };
@@ -18,12 +19,14 @@ const FooterWrapper = styled.footer`
   font-weight: 500;
   text-align: center;
 
-  span {
+  a {
     margin-left: 4px;
     font-size: 12px;
     text-align: end;
     font-weight: 600;
     color: var(--red);
     margin-bottom: 24px;
+    cursor: pointer;
+    text-decoration: none;
   }
 `;
