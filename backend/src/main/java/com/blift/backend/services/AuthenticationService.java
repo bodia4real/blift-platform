@@ -7,8 +7,9 @@ import com.blift.backend.entities.User;
 import com.blift.backend.entities.Consultant;
 import com.blift.backend.repositories.UserRepository;
 import com.blift.backend.repositories.ConsultantRepository;
-import com.blift.backend.validations.AuthValidation;
 import com.blift.backend.validations.TokenGenerator;
+import com.blift.backend.validations.ValidationService;
+import com.blift.backend.exceptions.ValidationException;
 import jakarta.mail.MessagingException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,23 +22,30 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final ConsultantRepository consultantRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthValidation authValidation;
+    private final ValidationService validationService; // NEW validation service
     private final EmailService emailService;
 
     public AuthenticationService(UserRepository userRepository,
                                  ConsultantRepository consultantRepository,
                                  PasswordEncoder passwordEncoder,
-                                 AuthValidation authValidation, EmailService emailService) {
+                                 ValidationService validationService,
+                                 EmailService emailService) {
         this.userRepository = userRepository;
         this.consultantRepository = consultantRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authValidation = authValidation;
+        this.validationService = validationService;
         this.emailService = emailService;
     }
 
     public String register(RegisterRequest request) throws MessagingException {
-        // Delegate validation to AuthValidation
-        authValidation.validateRegisterRequest(request);
+        // ✅ Use ValidationService to validate input fields
+//        validationService.validateEmail(request.getEmail());
+//        validationService.validatePassword(request.getPassword());
+//        validationService.validateFullName(request.getFullName());
+
+        if ("CONSULTANT".equalsIgnoreCase(request.getRole())) {
+            validationService.validateLicenseNumber(request.getLicenseNumber());
+        }
 
         if ("USER".equalsIgnoreCase(request.getRole())) {
             User user = new User();
@@ -55,7 +63,6 @@ public class AuthenticationService {
                     "Your verification code is: " + user.getVerificationCode()
             );
 
-
             return "User registered successfully. Please verify your email.";
         } else if ("CONSULTANT".equalsIgnoreCase(request.getRole())) {
             Consultant consultant = new Consultant();
@@ -72,26 +79,24 @@ public class AuthenticationService {
                     consultant.getEmail(),
                     "Verify Your Email",
                     "Your verification code is: " + consultant.getVerificationCode()
-            );
-
-            return "Consultant registered successfully. Please verify your email.";
+            );return "Consultant registered successfully. Please verify your email.";
         } else {
-            throw new IllegalArgumentException("Invalid role.");
+            throw new ValidationException("Invalid role.");
         }
     }
-
     public String login(AuthRequest request) {
-        // Delegate validation to AuthValidation
-        authValidation.validateLoginRequest(request);
+        // ✅ Use ValidationService to validate login request
+//        validationService.validateEmail(request.getEmail());
+//        validationService.validatePassword(request.getPassword());
 
         var userOpt = userRepository.findByEmail(request.getEmail());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                throw new IllegalArgumentException("Invalid email or password.");
+                throw new ValidationException("Invalid email or password.");
             }
             if (!user.isEnabled()) {
-                throw new IllegalArgumentException("Account not verified. Please verify your email.");
+                throw new ValidationException("Account not verified. Please verify your email.");
             }
             return "User logged in successfully!";
         }
@@ -100,25 +105,23 @@ public class AuthenticationService {
         if (consultantOpt.isPresent()) {
             Consultant consultant = consultantOpt.get();
             if (!passwordEncoder.matches(request.getPassword(), consultant.getPassword())) {
-                throw new IllegalArgumentException("Invalid email or password.");
+                throw new ValidationException("Invalid email or password.");
             }
             if (!consultant.isEnabled()) {
-                throw new IllegalArgumentException("Account not verified. Please verify your email.");
+                throw new ValidationException("Account not verified. Please verify your email.");
             }
             return "Consultant logged in successfully!";
         }
 
-        throw new IllegalArgumentException("Email not found. Please register.");
+        throw new ValidationException("Email not found. Please register.");
     }
 
     public String verify(VerifyRequest request) {
         var userOpt = userRepository.findByEmail(request.getEmail());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            if (!user.getVerificationCode().equals(request.getVerificationCode()) ||
-                    user.getCodeExpiryTime().isBefore(LocalDateTime.now())) {
-                throw new IllegalArgumentException("Invalid or expired verification code.");
-            }
+            validationService.validateVerificationCode(user.getVerificationCode(), request.getVerificationCode(), user.getCodeExpiryTime());
+
             user.setEnabled(true);
             user.setVerificationCode(null);
             user.setCodeExpiryTime(null);
@@ -129,10 +132,8 @@ public class AuthenticationService {
         var consultantOpt = consultantRepository.findByEmail(request.getEmail());
         if (consultantOpt.isPresent()) {
             Consultant consultant = consultantOpt.get();
-            if (!consultant.getVerificationCode().equals(request.getVerificationCode()) ||
-                    consultant.getCodeExpiryTime().isBefore(LocalDateTime.now())) {
-                throw new IllegalArgumentException("Invalid or expired verification code.");
-            }
+            validationService.validateVerificationCode(consultant.getVerificationCode(), request.getVerificationCode(), consultant.getCodeExpiryTime());
+
             consultant.setEnabled(true);
             consultant.setVerificationCode(null);
             consultant.setCodeExpiryTime(null);
@@ -140,6 +141,6 @@ public class AuthenticationService {
             return "Consultant email verified successfully.";
         }
 
-        throw new IllegalArgumentException("Email not found.");
+        throw new ValidationException("Email not found.");
     }
 }

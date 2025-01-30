@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())  // Disable CSRF for REST APIs
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Apply CORS settings
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth", "/auth/verify").permitAll()  // Public endpoints
+                        .requestMatchers("/auth/register", "/auth", "/auth/verify", "/validate/*").permitAll()  // Public endpoints
                         .anyRequest().authenticated()  // Secure all other endpoints
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No sessions
