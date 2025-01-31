@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class AuthenticationService {
@@ -22,7 +23,7 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final ConsultantRepository consultantRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ValidationService validationService; // NEW validation service
+    private final ValidationService validationService;
     private final EmailService emailService;
 
     public AuthenticationService(UserRepository userRepository,
@@ -37,8 +38,8 @@ public class AuthenticationService {
         this.emailService = emailService;
     }
 
-    public String register(RegisterRequest request) throws MessagingException {
-        // ✅ Use ValidationService to validate input fields
+    public String register(RegisterRequest request) {
+        // ✅ Validate input fields
 //        validationService.validateEmail(request.getEmail());
 //        validationService.validatePassword(request.getPassword());
 //        validationService.validateFullName(request.getFullName());
@@ -52,40 +53,25 @@ public class AuthenticationService {
             user.setEmail(request.getEmail());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setFullName(request.getFullName());
-            user.setVerificationCode(TokenGenerator.generateVerificationCode());
-            user.setCodeExpiryTime(TokenGenerator.generateExpiryTime());
+            user.setEnabled(false); // User is unverified but can log in
             userRepository.save(user);
-
-            // Send verification email
-            emailService.sendEmail(
-                    user.getEmail(),
-                    "Verify Your Email",
-                    "Your verification code is: " + user.getVerificationCode()
-            );
-
-            return "User registered successfully. Please verify your email.";
+            return "User registered successfully. You can log in, and verify your email later if you want.";
         } else if ("CONSULTANT".equalsIgnoreCase(request.getRole())) {
             Consultant consultant = new Consultant();
             consultant.setEmail(request.getEmail());
             consultant.setPassword(passwordEncoder.encode(request.getPassword()));
             consultant.setFullName(request.getFullName());
             consultant.setLicenseNumber(request.getLicenseNumber());
-            consultant.setVerificationCode(TokenGenerator.generateVerificationCode());
-            consultant.setCodeExpiryTime(TokenGenerator.generateExpiryTime());
+            consultant.setEnabled(false); // Consultant is unverified but can log in
             consultantRepository.save(consultant);
-
-            // Send verification email
-            emailService.sendEmail(
-                    consultant.getEmail(),
-                    "Verify Your Email",
-                    "Your verification code is: " + consultant.getVerificationCode()
-            );return "Consultant registered successfully. Please verify your email.";
+            return "Consultant registered successfully. You can log in, and verify your email later if you want.";
         } else {
             throw new ValidationException("Invalid role.");
         }
     }
+
     public String login(AuthRequest request) {
-        // ✅ Use ValidationService to validate login request
+        // ✅ Validate login request
 //        validationService.validateEmail(request.getEmail());
 //        validationService.validatePassword(request.getPassword());
 
@@ -95,10 +81,7 @@ public class AuthenticationService {
             if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 throw new ValidationException("Invalid email or password.");
             }
-            if (!user.isEnabled()) {
-                throw new ValidationException("Account not verified. Please verify your email.");
-            }
-            return "User logged in successfully!";
+            return "User logged in successfully!"; // ✅ No need to verify email
         }
 
         var consultantOpt = consultantRepository.findByEmail(request.getEmail());
@@ -107,13 +90,49 @@ public class AuthenticationService {
             if (!passwordEncoder.matches(request.getPassword(), consultant.getPassword())) {
                 throw new ValidationException("Invalid email or password.");
             }
-            if (!consultant.isEnabled()) {
-                throw new ValidationException("Account not verified. Please verify your email.");
-            }
-            return "Consultant logged in successfully!";
+            return "Consultant logged in successfully!"; // ✅ No need to verify email
         }
 
         throw new ValidationException("Email not found. Please register.");
+    }
+
+    public String requestVerificationCode(String email) throws MessagingException {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        Optional<Consultant> consultantOpt = consultantRepository.findByEmail(email);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            String verificationCode = TokenGenerator.generateVerificationCode();
+            user.setVerificationCode(verificationCode);
+            user.setCodeExpiryTime(TokenGenerator.generateExpiryTime());
+            userRepository.save(user);
+
+            emailService.sendEmail(
+                    user.getEmail(),
+                    "Verify Your Email",
+                    "Your verification code is: " + verificationCode
+            );
+
+            return "Verification code sent to your email.";
+        }
+
+        if (consultantOpt.isPresent()) {
+            Consultant consultant = consultantOpt.get();
+            String verificationCode = TokenGenerator.generateVerificationCode();
+            consultant.setVerificationCode(verificationCode);
+            consultant.setCodeExpiryTime(TokenGenerator.generateExpiryTime());
+            consultantRepository.save(consultant);
+
+            emailService.sendEmail(
+                    consultant.getEmail(),
+                    "Verify Your Email",
+                    "Your verification code is: " + verificationCode
+            );
+
+            return "Verification code sent to your email.";
+        }
+
+        throw new ValidationException("Email not found.");
     }
 
     public String verify(VerifyRequest request) {

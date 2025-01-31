@@ -19,18 +19,19 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        try {
-            String message = authenticationService.register(request);
-            return ResponseEntity.ok(message);
-        } catch (MessagingException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send verification email.");
-        }
+        String message = authenticationService.register(request);
+        return ResponseEntity.ok(message);
     }
-
 
     @PostMapping
     public ResponseEntity<String> login(@RequestBody AuthRequest request) {
         String message = authenticationService.login(request);
+        return ResponseEntity.ok(message);
+    }
+
+    @PostMapping("/request-verification")
+    public ResponseEntity<String> requestVerificationCode(@RequestParam String email) throws MessagingException {
+        String message = authenticationService.requestVerificationCode(email);
         return ResponseEntity.ok(message);
     }
 
@@ -39,7 +40,5 @@ public class AuthController {
         String result = authenticationService.verify(request);
         return ResponseEntity.ok(result); // Wrap the response in a ResponseEntity
     }
-
-
 
 }
