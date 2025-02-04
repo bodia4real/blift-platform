@@ -1,6 +1,7 @@
 package com.blift.backend.controllers;
 
 import com.blift.backend.dto.AuthRequest;
+import com.blift.backend.dto.PasswordResetRequest;
 import com.blift.backend.dto.RegisterRequest;
 import com.blift.backend.dto.VerifyRequest;
 import com.blift.backend.services.AuthenticationService;
@@ -39,6 +40,19 @@ public class AuthController {
     public ResponseEntity<String> verify(@RequestBody VerifyRequest request) {
         String result = authenticationService.verify(request);
         return ResponseEntity.ok(result); // Wrap the response in a ResponseEntity
+    }
+
+    @PostMapping("/request-password-reset")
+    public ResponseEntity<String> requestPasswordReset(@RequestParam String email) throws MessagingException {
+        String message = authenticationService.requestPasswordReset(email);
+        return ResponseEntity.ok(message);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody PasswordResetRequest request) {
+        request.validatePasswordMatch(); // Check if passwords match
+        String message = authenticationService.resetPassword(request);
+        return ResponseEntity.ok(message);
     }
 
 }
