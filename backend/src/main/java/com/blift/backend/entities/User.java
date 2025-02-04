@@ -5,13 +5,13 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter                    // Generates getters for all fields
-@Setter                    // Generates setters for all fields
-@NoArgsConstructor         // Generates a no-argument constructor
-@AllArgsConstructor        // Generates an all-arguments constructor
-@ToString                  // Generates a toString() method
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Entity
-@Table(name = "users")     // Maps this class to the "users" table
+@Table(name = "users")
 public class User {
 
     @Id
@@ -27,8 +27,10 @@ public class User {
     @Column(nullable = false)
     private String fullName;  // User's full name
 
-    private String profilePicture;  // Optional field for profile picture URL
-    private String location;         // Optional field for location
+    private String profilePhoto;    // Path/URL to profile photo
+    private String languages;       // Spoken languages (comma-separated)
+    private String region;          // Province/region
+    private String location;        // Optional field for location
 
     private boolean enabled = false; // Email verification status
 
