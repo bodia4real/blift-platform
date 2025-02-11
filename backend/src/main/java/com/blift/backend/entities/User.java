@@ -35,4 +35,8 @@ public class User {
     private String verificationCode;
 
     private LocalDateTime codeExpiryTime; // Expiry time for the code
+
+    private String preferredLocation;
+
+    private String preferredLanguage;
 }
