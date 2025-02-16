@@ -1,13 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "../../UI/Button";
+import { Link } from "react-router-dom";
 
 const SuccessMessageScreen = ({ title, message, buttonText }) => {
   return (
     <ScreenWrapper>
       <h2>{title}</h2>
       <p>{message}</p>
-      <Button $primary>{buttonText}</Button>
+      <Button $primary as={Link} to="/auth">
+        {buttonText}
+      </Button>
     </ScreenWrapper>
   );
 };
@@ -34,6 +37,10 @@ const ScreenWrapper = styled.div`
     color: var(--grey);
     font-size: 14px;
     margin-bottom: 32px;
+  }
+
+  a {
+    text-decoration: none;
   }
 
   @media (min-width: 768px) {

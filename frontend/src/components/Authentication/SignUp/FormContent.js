@@ -8,7 +8,6 @@ import ResendEmail from "../shared/ResendEmail";
 
 const FormContent = ({
   submitForm,
-  steps,
   stepIndex,
   filteredSteps,
   formData,
@@ -17,15 +16,29 @@ const FormContent = ({
   handleValueChange,
   handleSelectRole,
   currentStep,
+  error,
 }) => {
   return (
-    <Form onSubmit={submitForm}>
+    <Form
+      onSubmit={submitForm}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (currentStep < filteredSteps.length) {
+            nextStep();
+          } else {
+            submitForm(e);
+          }
+        }
+      }}
+    >
       <FieldsContainer
         $marginBottom={stepIndex === filteredSteps.length - 1 ? "24px" : null}
       >
         {currentFormData.fields.map((field) =>
           field.type !== "select" ? (
             <Input
+              autoComplete={field.autoComplete}
               key={field.id}
               label={field.label}
               type={field.type}
@@ -33,6 +46,8 @@ const FormContent = ({
               maxLength={field.maxLength}
               value={formData[field.name]}
               onValueChange={handleValueChange}
+              param={field.param}
+              error={error[field.name]}
               required
             />
           ) : (
@@ -48,8 +63,14 @@ const FormContent = ({
         )}
       </FieldsContainer>
       {stepIndex === filteredSteps.length - 1 && <ResendEmail />}
-      <Button $primary onClick={nextStep}>
-        {steps.length === currentStep ? "Complete Registration" : "Next Step"}
+      <Button
+        $primary
+        onClick={nextStep}
+        type={filteredSteps.length === currentStep ? "submit" : "button"}
+      >
+        {filteredSteps.length === currentStep
+          ? "Complete Registration"
+          : "Next Step"}
       </Button>
     </Form>
   );
