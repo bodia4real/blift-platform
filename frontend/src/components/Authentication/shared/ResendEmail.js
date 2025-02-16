@@ -1,18 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const ResendEmail = () => {
   const [isDisabled, setIsDisabled] = useState(true);
+  const [countdown, setCountdown] = useState(30);
+
+  useEffect(() => {
+    let timer;
+    if (!isDisabled && countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (countdown === 0) {
+      setIsDisabled(true);
+      setCountdown(30);
+    }
+
+    return () => clearInterval(timer);
+  }, [isDisabled, countdown]);
 
   const handleResend = () => {
     setIsDisabled(false);
+    setCountdown(30);
   };
 
   return (
     <Wrapper>
       Didn&apos;t receive an email?
       <button type="button" onClick={handleResend} disabled={!isDisabled}>
-        {!isDisabled ? `Resend (${2}s)` : "Resend"}
+        {!isDisabled ? `Resend (${countdown}s)` : "Resend"}
       </button>
     </Wrapper>
   );
@@ -40,5 +56,6 @@ const Wrapper = styled.div`
   button:disabled {
     color: var(--grey);
     font-weight: 400;
+    cursor: default;
   }
 `;
