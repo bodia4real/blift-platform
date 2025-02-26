@@ -27,13 +27,15 @@ public class Consultant {
     @Column(nullable = false)
     private String fullName;
 
-    private String specialization;
-    private String languages;
+    private String specialization;  // Optional field for specialization
+    private String languages;       // Spoken languages (comma-separated)
+    private String region;          // Province/region
+    private String profilePhoto;    // Path/URL to profile photo
 
     @Column(unique = true, nullable = false)
-    private String licenseNumber;  // License number (must be unique)
+    private String licenseNumber;   // License number (must be unique)
 
-    private String location;  // Optional field for location
+    private String location;        // Optional field for location
 
     private boolean enabled = false; // Email verification status
     private String verificationCode;
