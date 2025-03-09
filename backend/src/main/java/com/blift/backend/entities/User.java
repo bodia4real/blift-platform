@@ -1,5 +1,4 @@
 package com.blift.backend.entities;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,7 +26,9 @@ public class User {
     @Column(nullable = false)
     private String fullName;  // User's full name
 
-    private String profilePhoto;    // Path/URL to profile photo
+    @Column(name = "profile_picture")
+    private String profile_picture;    // Path/URL to profile photo
+
     private String languages;       // Spoken languages (comma-separated)
     private String region;          // Province/region
     private String location;        // Optional field for location

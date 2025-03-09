@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/profile")
+@RequestMapping("/profile")
 public class ProfileController {
 
     @Autowired
@@ -31,9 +31,15 @@ public class ProfileController {
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
+
+            // Debugging prints
+            System.out.println("Received Languages: " + updatedUser.getLanguages());
+            System.out.println("Received Region: " + updatedUser.getRegion());
+            System.out.println("Received Profile Picture: " + updatedUser.getProfile_picture());
+
             user.setLanguages(updatedUser.getLanguages());
             user.setRegion(updatedUser.getRegion());
-            user.setProfilePhoto(updatedUser.getProfilePhoto());
+            user.setProfile_picture(updatedUser.getProfile_picture());
             userRepository.save(user);
             return ResponseEntity.ok(user);
         }
@@ -74,7 +80,7 @@ public class ProfileController {
             if ("user".equalsIgnoreCase(userType)) {
                 Optional<User> user = userRepository.findById(id);
                 if (user.isPresent()) {
-                    user.get().setProfilePhoto(uploadDir + fileName);
+                    user.get().setProfile_picture(uploadDir + fileName);
                     userRepository.save(user.get());
                     return ResponseEntity.ok("Profile photo updated for user.");
                 } else {

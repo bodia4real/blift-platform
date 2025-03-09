@@ -23,6 +23,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Apply CORS settings
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/auth", "/auth/verify", "/auth/request-verification", "/validate/*").permitAll()  // Public endpoints
+                        .requestMatchers("/profile/**").permitAll()
                         .anyRequest().authenticated()  // Secure all other endpoints
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No sessions
