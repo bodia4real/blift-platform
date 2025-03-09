@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import showPassword from "../../assets/icon-eye.svg";
 import hidePassword from "../../assets/icon-eye-off.svg";
@@ -9,14 +9,22 @@ const Input = ({
   name,
   maxLength,
   required,
-  validate,
+  autoComplete,
   value,
   onValueChange,
+  error,
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [error, setError] = useState("");
-
+  const [errorInput, setErrorInput] = useState(error || "");
   const inputType = type === "password" && isPasswordVisible ? "text" : type;
+
+  useEffect(() => {
+    setErrorInput(error);
+  }, [error]);
+
+  const resetErrorHandler = () => {
+    setErrorInput("");
+  };
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -25,18 +33,15 @@ const Input = ({
   const handleChange = (e) => {
     const inputValue = e.target.value;
     onValueChange(name, inputValue);
-
-    if (validate) {
-      const validationError = validate(inputValue);
-      setError(validationError);
-    }
   };
 
   return (
-    <InputWrapper $isValid={!error} $isPasswordField={type === "password"}>
-      {error && <ErrorText>{"Opps lorem ipsum degrate" || error}</ErrorText>}
+    <InputWrapper $isValid={!errorInput} $isPasswordField={type === "password"}>
+      {errorInput && <ErrorText>{errorInput}</ErrorText>}
       <div>
         <input
+          autoComplete={autoComplete}
+          onFocus={resetErrorHandler}
           onChange={handleChange}
           type={inputType}
           id={name}
@@ -103,7 +108,8 @@ const InputWrapper = styled.div`
 
     @media (min-width: 768px) {
       input {
-        border: 1px solid #c8cbcc;
+        border: 1px solid
+          ${({ $isValid }) => ($isValid ? "#c8cbcc" : "var(--red)")};
       }
     }
   }

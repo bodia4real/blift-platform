@@ -1,6 +1,7 @@
 package com.blift.backend.services;
 
 import com.blift.backend.dto.AuthRequest;
+import com.blift.backend.dto.PasswordResetRequest;
 import com.blift.backend.dto.RegisterRequest;
 import com.blift.backend.dto.VerifyRequest;
 import com.blift.backend.entities.User;
@@ -39,10 +40,6 @@ public class AuthenticationService {
     }
 
     public String register(RegisterRequest request) {
-        // ✅ Validate input fields
-//        validationService.validateEmail(request.getEmail());
-//        validationService.validatePassword(request.getPassword());
-//        validationService.validateFullName(request.getFullName());
 
         if ("CONSULTANT".equalsIgnoreCase(request.getRole())) {
             validationService.validateLicenseNumber(request.getLicenseNumber());
@@ -71,9 +68,6 @@ public class AuthenticationService {
     }
 
     public String login(AuthRequest request) {
-        // ✅ Validate login request
-//        validationService.validateEmail(request.getEmail());
-//        validationService.validatePassword(request.getPassword());
 
         var userOpt = userRepository.findByEmail(request.getEmail());
         if (userOpt.isPresent()) {
@@ -161,5 +155,78 @@ public class AuthenticationService {
         }
 
         throw new ValidationException("Email not found.");
+    }
+
+    public String requestPasswordReset(String email) throws MessagingException {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        Optional<Consultant> consultantOpt = consultantRepository.findByEmail(email);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            String verificationCode = TokenGenerator.generateVerificationCode();
+            user.setVerificationCode(verificationCode);
+            user.setCodeExpiryTime(TokenGenerator.generateExpiryTime());
+            userRepository.save(user);
+
+            emailService.sendEmail(
+                    user.getEmail(),
+                    "Reset Your Password",
+                    "Your password reset code is: " + verificationCode
+            );
+
+            return "Password reset code sent to your email.";
+        }
+
+        if (consultantOpt.isPresent()) {
+            Consultant consultant = consultantOpt.get();
+            String verificationCode = TokenGenerator.generateVerificationCode();
+            consultant.setVerificationCode(verificationCode);
+            consultant.setCodeExpiryTime(TokenGenerator.generateExpiryTime());
+            consultantRepository.save(consultant);
+
+            emailService.sendEmail(
+                    consultant.getEmail(),
+                    "Reset Your Password",
+                    "Your password reset code is: " + verificationCode
+            );
+
+            return "Password reset code sent to your email.";
+        }
+
+        throw new ValidationException("Email not found.");
+    }
+
+    // ✅ Step 2: Reset password (verify code and update password)
+    public String resetPassword(PasswordResetRequest request) {
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+        Optional<Consultant> consultantOpt = consultantRepository.findByEmail(request.getEmail());
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            validationService.validateVerificationCode(user.getVerificationCode(), request.getVerificationCode(), user.getCodeExpiryTime());
+            validationService.validatePassword(request.getNewPassword());
+
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            user.setVerificationCode(null);
+            user.setCodeExpiryTime(null);
+            userRepository.save(user);
+
+            return "Password reset successfully.";
+        }
+
+        if (consultantOpt.isPresent()) {
+            Consultant consultant = consultantOpt.get();
+            validationService.validateVerificationCode(consultant.getVerificationCode(), request.getVerificationCode(), consultant.getCodeExpiryTime());
+            validationService.validatePassword(request.getNewPassword());
+
+            consultant.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            consultant.setVerificationCode(null);
+            consultant.setCodeExpiryTime(null);
+            consultantRepository.save(consultant);
+
+            return "Password reset successfully.";
+        }
+
+        throw new ValidationException("Invalid email.");
     }
 }

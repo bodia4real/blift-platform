@@ -2,10 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-const FormFooter = ({ question, action, navigationLink }) => {
+const FormFooter = ({ children, action, navigationLink }) => {
   return (
     <FooterWrapper>
-      {question}
+      {children}
       <Link to={navigationLink}>{action}</Link>
     </FooterWrapper>
   );

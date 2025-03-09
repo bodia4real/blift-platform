@@ -1,6 +1,20 @@
 export const loginFormFields = [
-  { id: "field-1", label: "Email", type: "text", name: "email" },
-  { id: "field-2", label: "Password", type: "password", name: "password" },
+  {
+    id: "field-1",
+    label: "Email",
+    type: "text",
+    name: "email",
+    autoComplete: "email",
+    param: "email",
+  },
+  {
+    id: "field-2",
+    label: "Password",
+    type: "password",
+    name: "password",
+    param: "password",
+    autoComplete: "current-password",
+  },
 ];
 
 export const registrationFormFields = [
@@ -10,7 +24,13 @@ export const registrationFormFields = [
     description:
       "Please enter your full name and select your role to create your account.",
     fields: [
-      { id: "field-1", label: "Full Name", type: "text", name: "name" },
+      {
+        id: "field-1",
+        label: "Full Name",
+        type: "text",
+        name: "fullname",
+        param: "fullName",
+      },
       {
         id: "field-2",
         label: "Role",
@@ -18,7 +38,7 @@ export const registrationFormFields = [
         name: "role",
         options: [
           { value: "user", title: "User", id: "user-option" },
-          { value: "rcic", title: "RCIC", id: "rcic-option" },
+          { value: "consultant", title: "Consultant", id: "consultant-option" },
         ],
       },
     ],
@@ -29,12 +49,21 @@ export const registrationFormFields = [
     description:
       "Please enter your email and password to create your account and access it securely.",
     fields: [
-      { id: "field-3", label: "Email", type: "email", name: "email" },
+      {
+        id: "field-3",
+        label: "Email",
+        type: "email",
+        name: "email",
+        param: "email",
+        autoComplete: "email",
+      },
       {
         id: "field-4",
         label: "Password",
         type: "password",
         name: "password",
+        param: "password",
+        autoComplete: "new-password",
       },
     ],
   },
@@ -44,7 +73,13 @@ export const registrationFormFields = [
     description:
       "Enter your license number to confirm your credentials and securely proceed to the next step.",
     fields: [
-      { id: "field-3", label: "Number", type: "number", name: "number" },
+      {
+        id: "field-3",
+        label: "Number",
+        type: "text",
+        name: "license",
+        param: "licenseNumber",
+      },
     ],
   },
   {
@@ -58,7 +93,7 @@ export const registrationFormFields = [
         label: "Code",
         type: "text",
         name: "code",
-        maxLength: "5",
+        maxLength: "6",
       },
     ],
   },
