@@ -68,27 +68,27 @@ public class AuthenticationService {
     }
 
     public String login(AuthRequest request) {
-
         var userOpt = userRepository.findByEmail(request.getEmail());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                throw new ValidationException("Invalid email or password.");
+                throw new ValidationException("Incorrect password.");
             }
-            return "User logged in successfully!"; // ✅ No need to verify email
+            return "User logged in successfully!";
         }
 
         var consultantOpt = consultantRepository.findByEmail(request.getEmail());
         if (consultantOpt.isPresent()) {
             Consultant consultant = consultantOpt.get();
             if (!passwordEncoder.matches(request.getPassword(), consultant.getPassword())) {
-                throw new ValidationException("Invalid email or password.");
+                throw new ValidationException("Incorrect password.");
             }
-            return "Consultant logged in successfully!"; // ✅ No need to verify email
+            return "Consultant logged in successfully!";
         }
 
         throw new ValidationException("Email not found. Please register.");
     }
+
 
     public String requestVerificationCode(String email) throws MessagingException {
         Optional<User> userOpt = userRepository.findByEmail(email);
