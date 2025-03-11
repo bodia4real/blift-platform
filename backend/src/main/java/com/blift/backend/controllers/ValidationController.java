@@ -14,11 +14,18 @@ public class ValidationController {
         this.validationService = validationService;
     }
 
-    @GetMapping("/email")
+    @GetMapping("/emailForRegistration")
     public ResponseEntity<?> validateEmail(@RequestParam String email) {
-        validationService.validateEmail(email);
+        validationService.validateEmailForRegistration(email);
         return ResponseEntity.ok("Email is valid.");
     }
+
+    @GetMapping("/emailForLogin")
+    public ResponseEntity<?> validateEmailForLogin(@RequestParam String email) {
+        validationService.validateEmailForLogin(email);
+        return ResponseEntity.ok("Email is valid.");
+    }
+
 
     @GetMapping("/password")
     public ResponseEntity<?> validatePassword(@RequestParam String password) {

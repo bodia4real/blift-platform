@@ -4,10 +4,12 @@ import com.blift.backend.exceptions.ValidationException;
 import com.blift.backend.repositories.UserRepository;
 import com.blift.backend.repositories.ConsultantRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.LocalDateTime;
 
 @Service
+@RequestScope
 public class ValidationService {
 
     private final UserRepository userRepository;
@@ -37,11 +39,17 @@ public class ValidationService {
         }
     }
 
-    public void validateEmail(String email) {
+    public void validateEmailForRegistration(String email) {
+            checkIfEmailIsEmpty(email);
+            checkIfEmailFormatIsValid(email);
+            checkIfEmailIsAlreadyRegistered(email);
+    }
+
+    public void validateEmailForLogin(String email) {
         checkIfEmailIsEmpty(email);
         checkIfEmailFormatIsValid(email);
-        checkIfEmailIsAlreadyRegistered(email);
     }
+
 
     // 🔹 PASSWORD VALIDATIONS
     public void checkIfPasswordIsEmpty(String password) {
