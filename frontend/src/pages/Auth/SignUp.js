@@ -20,7 +20,7 @@ const SignUp = () => {
   const [formData, setFormData] = useState({
     fullname: "",
     role: "user",
-    email: "",
+    emailForRegistration: "",
     password: "",
     license: "",
     code: "",
@@ -89,7 +89,7 @@ const SignUp = () => {
             `${process.env.REACT_APP_BACKEND_URL}/auth/register`,
             {
               fullName: formData.fullname,
-              email: formData.email,
+              email: formData.emailForRegistration,
               password: formData.password,
               role: formData.role.toUpperCase(),
               ...(formData.role === "consultant"
@@ -104,7 +104,7 @@ const SignUp = () => {
             `${process.env.REACT_APP_BACKEND_URL}/auth/request-verification`,
             null,
             {
-              params: { email: formData.email },
+              params: { email: formData.emailForRegistration },
             }
           );
 
@@ -130,10 +130,10 @@ const SignUp = () => {
   const submitFormHandler = (e) => {
     e.preventDefault();
 
-    if (formData.email && formData.code) {
+    if (formData.emailForRegistration && formData.code) {
       axios
         .post(`${process.env.REACT_APP_BACKEND_URL}/auth/verify`, {
-          email: formData.email,
+          email: formData.emailForRegistration,
           verificationCode: formData.code,
         })
         .then((response) => {
