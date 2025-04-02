@@ -19,7 +19,10 @@ const Login = () => {
   });
 
   useEffect(() => {
-    sessionStorage.removeItem("session");
+    const isLoggedIn = localStorage.getItem("login");
+    if (isLoggedIn === "true") {
+      navigate("/");
+    }
   }, []);
 
   const handleValueChange = (fieldName, value) => {
@@ -69,7 +72,7 @@ const Login = () => {
       );
 
       console.log("Login successful:", response.data);
-      sessionStorage.setItem("session", new Date());
+      localStorage.setItem("login", true);
       navigate("/");
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);

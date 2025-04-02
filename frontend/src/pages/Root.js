@@ -1,12 +1,32 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Header from "../components/Header/Header";
 
 const RootLayout = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const isLogged = localStorage.getItem("login") === "true";
+
+    if (!isLogged && !location.pathname.startsWith("/auth")) {
+      navigate("/auth", { replace: true });
+    }
+
+    setIsLoggedIn(isLogged);
+    setIsLoading(false);
+  }, [location, navigate]);
+
+  if (isLoading) {
+    return null;
+  }
+
   return (
     <>
-      <Header />
+      {isLoggedIn && <Header />}
       <Container>
         <Outlet />
       </Container>
@@ -25,12 +45,8 @@ const Container = styled.div`
   width: 100%;
 
   @media (min-width: 768px) {
-    /* padding: 46px; */
     padding: 0px 46px;
     max-width: 1284px;
-    /* max-width: 100%; */
-    /* display: grid;
-    place-items: center; */
   }
 
   @media (min-width: 1080px) {

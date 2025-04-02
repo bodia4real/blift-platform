@@ -14,6 +14,9 @@ const ProfileOption = ({
 
   function navigateHandler() {
     if (navigateTo) {
+      if (navigateTo === "/auth") {
+        localStorage.removeItem("login");
+      }
       navigate(navigateTo);
     }
   }
