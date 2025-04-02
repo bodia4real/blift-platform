@@ -1,12 +1,16 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
+import Header from "../components/Header/Header";
 
 const RootLayout = () => {
   return (
-    <Container>
-      <Outlet />
-    </Container>
+    <>
+      <Header />
+      <Container>
+        <Outlet />
+      </Container>
+    </>
   );
 };
 
@@ -21,9 +25,15 @@ const Container = styled.div`
   width: 100%;
 
   @media (min-width: 768px) {
-    padding: 46px;
-    max-width: 100%;
-    display: grid;
-    place-items: center;
+    /* padding: 46px; */
+    padding: 0px 46px;
+    max-width: 1284px;
+    /* max-width: 100%; */
+    /* display: grid;
+    place-items: center; */
+  }
+
+  @media (min-width: 1080px) {
+    padding: 0px 56px;
   }
 `;
