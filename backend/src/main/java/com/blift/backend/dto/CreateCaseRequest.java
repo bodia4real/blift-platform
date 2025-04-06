@@ -10,5 +10,4 @@ public class CreateCaseRequest {
     private Long caseTypeId;
     private Long rcicId;         // NEW: Who is creating the case
     private String province;
-    private String status;
 }

@@ -7,9 +7,7 @@ import com.blift.backend.entities.CaseType;
 import com.blift.backend.entities.Consultant;
 import com.blift.backend.entities.User;
 import com.blift.backend.repositories.CaseRepository;
-import com.blift.backend.repositories.CaseTypeRepository;
-import com.blift.backend.repositories.ConsultantRepository;
-import com.blift.backend.repositories.UserRepository;
+import com.blift.backend.validations.CaseValidation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,42 +18,26 @@ import java.util.List;
 public class CaseController {
 
     private final CaseRepository caseRepository;
-    private final CaseTypeRepository caseTypeRepository;
-    private final UserRepository userRepository;
-    private final ConsultantRepository consultantRepository;
+    private final CaseValidation caseValidation;
 
     public CaseController(CaseRepository caseRepository,
-                          CaseTypeRepository caseTypeRepository,
-                          UserRepository userRepository,
-                          ConsultantRepository consultantRepository) {
+                          CaseValidation caseValidation) {
         this.caseRepository = caseRepository;
-        this.caseTypeRepository = caseTypeRepository;
-        this.userRepository = userRepository;
-        this.consultantRepository = consultantRepository;
+        this.caseValidation = caseValidation;
     }
 
     @PostMapping
     public ResponseEntity<String> createCase(@RequestBody CreateCaseRequest request) {
-        // Find user
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = caseValidation.validateUserExists(request.getUserId());
+        CaseType caseType = caseValidation.validateCaseTypeExists(request.getCaseTypeId());
+        Consultant rcic = caseValidation.validateRCICExists(request.getRcicId());
 
-        // Find case type
-        CaseType caseType = caseTypeRepository.findById(request.getCaseTypeId())
-                .orElseThrow(() -> new RuntimeException("Case type not found"));
-
-        // Find RCIC
-        Consultant rcic = consultantRepository.findById(request.getRcicId())
-                .orElseThrow(() -> new RuntimeException("RCIC not found"));
-
-        // Auto-generate case name
         String generatedName = caseType.getCaseTypeName() + " for " + user.getFullName();
 
-        // Create and save new case
         Case newCase = new Case();
         newCase.setName(generatedName);
         newCase.setProvince(request.getProvince());
-        newCase.setStatus(request.getStatus());
+        newCase.setStatus("Active"); // ✅ default status
         newCase.setCaseType(caseType);
         newCase.setUser(user);
         newCase.setRcic(rcic);
@@ -74,7 +56,6 @@ public class CaseController {
 
         return ResponseEntity.ok(result);
     }
-
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<CaseResponseDTO>> getCasesByUser(@PathVariable Long userId) {
@@ -100,5 +81,4 @@ public class CaseController {
                 c.getRcic().getFullName()
         );
     }
-
 }
