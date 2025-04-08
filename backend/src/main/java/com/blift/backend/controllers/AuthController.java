@@ -55,4 +55,14 @@ public class AuthController {
         return ResponseEntity.ok(message);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<?> getUserInfo(@RequestParam String email) {
+        var userInfo = authenticationService.getUserInfoByEmail(email);
+        if (userInfo == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }
+        return ResponseEntity.ok(userInfo);
+    }
+
+
 }

@@ -1,9 +1,6 @@
 package com.blift.backend.services;
 
-import com.blift.backend.dto.AuthRequest;
-import com.blift.backend.dto.PasswordResetRequest;
-import com.blift.backend.dto.RegisterRequest;
-import com.blift.backend.dto.VerifyRequest;
+import com.blift.backend.dto.*;
 import com.blift.backend.entities.User;
 import com.blift.backend.entities.Consultant;
 import com.blift.backend.repositories.UserRepository;
@@ -229,4 +226,25 @@ public class AuthenticationService {
 
         throw new ValidationException("Invalid email.");
     }
+
+    public UserInfoResponseDTO getUserInfoByEmail(String email) {
+        return userRepository.findByEmail(email).map(user ->
+                new UserInfoResponseDTO(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getFullName(),
+                        "USER"
+                )
+        ).orElseGet(() ->
+                consultantRepository.findByEmail(email).map(consultant ->
+                        new UserInfoResponseDTO(
+                                consultant.getId(),
+                                consultant.getEmail(),
+                                consultant.getFullName(),
+                                "CONSULTANT"
+                        )
+                ).orElse(null)
+        );
+    }
+
 }
