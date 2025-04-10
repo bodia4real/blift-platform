@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
 import BreadcrumbNavigation from "../../components/UI/BreadcrumbNavigation";
 import avatar from "../../assets/avatar.svg";
 import ProfileOptions from "../../components/Profile/ProfileOptions";
 import MoreProfileOptions from "../../components/Profile/MoreProfileOptions";
+import { UserContext } from "../../context/UserContext";
 
 const ProfilePage = () => {
+  const { data } = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (data) {
+      setIsLoading(false);
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return (
+      <li
+        style={{ textAlign: "center", padding: "26px", listStyleType: "none" }}
+      >
+        Loading...
+      </li>
+    );
+  }
+
   return (
     <PageWrapper>
       <BreadcrumbNavigation title="Profile" />
@@ -15,8 +35,8 @@ const ProfilePage = () => {
             <img src={avatar} alt="Default Avatar" />
           </AvatarWrapper>
           <div>
-            <h3>John Benjamin</h3>
-            <p>User</p>
+            <h3>{data.fullName}</h3>
+            <p>{data.role}</p>
           </div>
         </InfoContainer>
       </ProfileInfo>

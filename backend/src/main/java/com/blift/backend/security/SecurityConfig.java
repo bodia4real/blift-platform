@@ -25,9 +25,9 @@ public class SecurityConfig {
 
                         .requestMatchers("/auth/register", "/auth", "/auth/verify", "/auth/request-verification", "/validate/*").permitAll()  // Public endpoints
                         .requestMatchers("/profile/**").permitAll()
-                        .requestMatchers("/rcics").permitAll()
+                        .requestMatchers("/rcics",  "/rcics/hire-requests/user/**", "/rcics/hire-requests/**").permitAll()
                         .requestMatchers("/profile/**").permitAll()
-                        .requestMatchers("/auth/register", "/auth", "/auth/verify", "/auth/request-verification", "/validate/*", "/auth/request-password-reset", "/auth/reset-password", "/rcics/hire", "/rcics/hire/{id}/*", "/cases", "/cases/rcic/*", "/cases/user/*").permitAll()  // Public endpoints
+                        .requestMatchers("/auth/register", "/auth", "/auth/verify", "/auth/request-verification", "/auth/me", "/validate/*", "/auth/request-password-reset", "/auth/reset-password", "/rcics/hire", "/rcics/hire/{id}/*", "/cases", "/cases/rcic/*", "/cases/user/*").permitAll()  // Public endpoints
 
                         .anyRequest().authenticated()  // Secure all other endpoints
                 )

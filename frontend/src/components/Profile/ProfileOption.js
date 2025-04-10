@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import arrowRight from "../../assets/arrow-right.svg";
 import { useNavigate } from "react-router-dom";
-
+import { UserContext } from "../../context/UserContext";
 const ProfileOption = ({
   title,
   description,
@@ -11,11 +11,12 @@ const ProfileOption = ({
   navigateTo,
 }) => {
   const navigate = useNavigate();
+  const { logout } = useContext(UserContext);
 
   function navigateHandler() {
     if (navigateTo) {
       if (navigateTo === "/auth") {
-        localStorage.removeItem("login");
+        logout();
       }
       navigate(navigateTo);
     }

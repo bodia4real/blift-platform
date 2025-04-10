@@ -14,7 +14,20 @@ const BreadcrumbNavigation = ({ title }) => {
     <Navigation>
       <h2>{title}</h2>
       <BackButton onClick={goBackHandler}>
-        <img src={arrowLeft} alt="Arrow left" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+        >
+          <path
+            d="M7.5 9L4.5 6L7.5 3"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
         Back
       </BackButton>
     </Navigation>
@@ -38,7 +51,7 @@ const BackButton = styled.button`
   cursor: pointer;
   font: inherit;
 
-  img {
+  svg {
     margin-top: 4px;
     width: 20px;
     height: 20px;

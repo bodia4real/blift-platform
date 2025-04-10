@@ -10,7 +10,12 @@ import ProfilePage from "./pages/Profile/Profile";
 import AccountPage from "./pages/Profile/Account";
 import HelpSupportPage from "./pages/Profile/HelpSupport";
 import AboutAppPage from "./pages/Profile/AboutApp";
-import NotificationPage from "./pages/Notification";
+import NotificationsPage from "./pages/Notifications";
+import HireConsultantPage from "./pages/HireConsultant";
+import { UserProvider } from "./context/UserContext";
+import EditProfilePage from "./pages/Profile/EditProfile";
+import ProtectedRoute from "./components/helpers/ProtectedRoute";
+import CreateCasePage from "./pages/CreateCase";
 
 const router = createBrowserRouter([
   {
@@ -34,14 +39,28 @@ const router = createBrowserRouter([
           { path: "account", element: <AccountPage /> },
           { path: "support", element: <HelpSupportPage /> },
           { path: "about-app", element: <AboutAppPage /> },
+          { path: "edit-profile", element: <EditProfilePage /> },
         ],
       },
       {
         path: "hire-rcic",
+        element: (
+          <ProtectedRoute allowRoles={["user"]}>
+            <HireConsultantPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "create-case",
+        element: (
+          <ProtectedRoute allowRoles={["consultant"]}>
+            <CreateCasePage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "notifications",
-        element: <NotificationPage />,
+        element: <NotificationsPage />,
       },
       {
         path: "news",
@@ -52,7 +71,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
+  );
 }
 
 export default App;

@@ -9,9 +9,12 @@ import SocialAuthOptions from "../../components/Authentication/shared/SocialAuth
 import FormFooter from "../../components/Authentication/shared/FormFooter";
 import FieldsContainer from "../../components/UI/FieldsContainer";
 import { loginFormFields as formFields } from "../../data/authFormFields";
+import { useContext } from "react";
+import { UserContext } from "../../context/UserContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useContext(UserContext);
   const [error, setError] = useState({});
   const [formData, setFormData] = useState({
     emailForLogin: "",
@@ -72,7 +75,7 @@ const Login = () => {
       );
 
       console.log("Login successful:", response.data);
-      localStorage.setItem("login", true);
+      login(formData.emailForLogin);
       navigate("/");
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
