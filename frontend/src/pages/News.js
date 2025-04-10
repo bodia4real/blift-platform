@@ -15,7 +15,7 @@ const NewsPage = () => {
       setNews(data.data.results);
       return data;
     }
-    const newsData = fetchNews();
+    fetchNews();
   }, []);
 
   return (
@@ -42,25 +42,6 @@ const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 28px;
-`;
-
-const Navigation = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  a {
-    text-decoration: none;
-    color: var(--red);
-    display: flex;
-    align-items: center;
-  }
-
-  img {
-    margin-top: 4px;
-    width: 20px;
-    height: 20px;
-  }
 `;
 
 const NewsContainer = styled.section`

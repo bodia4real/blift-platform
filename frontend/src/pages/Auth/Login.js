@@ -26,7 +26,7 @@ const Login = () => {
     if (isLoggedIn === "true") {
       navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   const handleValueChange = (fieldName, value) => {
     setFormData((prevData) => ({

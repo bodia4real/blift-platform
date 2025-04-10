@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { UserContext } from "../../../context/UserContext";
-import Button from "../../UI/Button";
 import { Link } from "react-router-dom";
 import avatar from "../../../assets/avatar.svg";
 import axios from "axios";

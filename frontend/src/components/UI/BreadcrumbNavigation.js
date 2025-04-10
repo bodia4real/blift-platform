@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import arrowLeft from "../../assets/arrow-left.svg";
 import styled from "styled-components";
 
 const BreadcrumbNavigation = ({ title }) => {

@@ -33,7 +33,7 @@ export const UserProvider = ({ children }) => {
           console.error("Failed to fetch user data:", err);
         });
     }
-  }, [isLogged, setIsLogged]);
+  }, [isLogged, setIsLogged, data]);
 
   const login = (email) => {
     const encryptedEmail = encrypt(email);

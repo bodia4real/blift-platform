@@ -123,9 +123,11 @@ public class HireController {
                         req.getUser().getFullName(),
                         req.getUser().getLocation(),
                         req.getUser().getRegion(),
-                        Arrays.stream(req.getUser().getLanguages().split(","))
+                        req.getUser().getLanguages() != null
+                                ? Arrays.stream(req.getUser().getLanguages().split(","))
                                 .map(String::trim)
-                                .collect(Collectors.toList()),
+                                .collect(Collectors.toList())
+                                : List.of(), // empty list if null
                         req.getStatus(),
                         req.getCreatedAt()
                 ))

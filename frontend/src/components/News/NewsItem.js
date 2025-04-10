@@ -14,7 +14,7 @@ const NewsItem = ({ title, description, date }) => {
       <p className="description">{description}</p>
       <footer>
         <p className="date">Published: {fullDate}</p>
-        <a>View Full News</a>
+        <Link>View Full News</Link>
       </footer>
     </News>
   );
@@ -36,10 +36,10 @@ const News = styled.article`
     font-size: 18px;
     font-weight: 700;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Обмеження до двох рядків */
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis; /* Додає "..." при обрізанні тексту */
+    text-overflow: ellipsis;
     max-width: 100%;
   }
 
@@ -49,9 +49,9 @@ const News = styled.article`
     margin-bottom: 12px;
 
     overflow: hidden;
-    white-space: nowrap; /* Щоб текст не переносився на новий рядок */
-    text-overflow: ellipsis; /* Додає "..." при обрізанні тексту */
-    max-width: 100%; /* Запобігає виходу тексту за межі */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
 
   .date {
@@ -59,13 +59,13 @@ const News = styled.article`
     font-size: 14px;
   }
 
-  a {
-    color: var(--red);
-    font-size: 14px;
-  }
-
   footer {
     display: flex;
     justify-content: space-between;
   }
+`;
+
+const Link = styled.span`
+  color: var(--red);
+  font-size: 14px;
 `;
