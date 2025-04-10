@@ -1,17 +1,48 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import { UserContext } from "../../../context/UserContext";
 import Button from "../../UI/Button";
+import { Link } from "react-router-dom";
 import avatar from "../../../assets/avatar.svg";
+import axios from "axios";
 
 const AccountInfo = () => {
+  const { data } = useContext(UserContext);
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    if (!data) return;
+
+    const endpoint =
+      data.role === "User"
+        ? `/profile/user/${data.id}`
+        : `/profile/consultant/${data.id}`;
+
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_URL}${endpoint}`)
+      .then((res) => setProfile(res.data))
+      .catch((err) => console.error("Profile fetch failed:", err));
+  }, [data]);
+
+  if (!data || !profile) {
+    return (
+      <li
+        style={{ textAlign: "center", padding: "26px", listStyleType: "none" }}
+      >
+        Loading...
+      </li>
+    );
+  }
+  console.log(profile);
+
   return (
     <Wrapper>
       <InfoContainer>
         <MainInfoContainer>
           <Avatar src={avatar} alt="User Avatar" />
           <UserInfo>
-            <h3>John Benjamin</h3>
-            <span>User</span>
+            <h3>{profile.fullName}</h3>
+            <span>{profile.role}</span>
           </UserInfo>
         </MainInfoContainer>
 
@@ -19,26 +50,27 @@ const AccountInfo = () => {
           <InfoGroup>
             <InfoBlock>
               <h4>Location</h4>
-              <p>England, London</p>
+              <p>{profile.location || "Not specified"}</p>
             </InfoBlock>
             <InfoBlock>
               <h4>Languages</h4>
-              <p>English, French</p>
+              <p>{profile.languages || "Not specified"}</p>
             </InfoBlock>
-          </InfoGroup>
-          <InfoGroup>
             <InfoBlock>
-              <h4>Description</h4>
-              <p>
-                Aspiring student moving to Ontario. Passionate about learning,
-                exploring new opportunities, and building a future in Canada.
-              </p>
+              <h4>Region</h4>
+              <p>{profile.region || "Not specified"}</p>
             </InfoBlock>
+            {data.role === "Consultant" && (
+              <InfoBlock>
+                <h4>Specialization</h4>
+                <p>{profile?.specialization || "Not specified"}</p>
+              </InfoBlock>
+            )}
           </InfoGroup>
         </DetailedInfoContainer>
       </InfoContainer>
 
-      <Button $primary>Edit Profile</Button>
+      <StyledLink to="/profile/edit-profile">Edit Profile</StyledLink>
     </Wrapper>
   );
 };
@@ -115,12 +147,9 @@ const DetailedInfoContainer = styled.section`
 `;
 
 const InfoGroup = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  & > article:nth-child(2) {
-    padding-right: 24%;
-  }
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
 `;
 
 const InfoBlock = styled.article`
@@ -131,5 +160,24 @@ const InfoBlock = styled.article`
   p {
     color: var(--grey);
     font-size: 16px;
+  }
+`;
+
+const StyledLink = styled(Link)`
+  display: block;
+  border: none;
+  width: 100%;
+  text-align: center;
+  padding: 12px;
+  font-size: 15px;
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  background-color: rgb(235, 64, 52);
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgb(200, 50, 40);
+    cursor: pointer;
   }
 `;

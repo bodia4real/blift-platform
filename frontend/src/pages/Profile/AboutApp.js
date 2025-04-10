@@ -8,37 +8,37 @@ const AboutAppPage = () => {
       <BreadcrumbNavigation title="About App" />
       <Content>
         <Section>
-          <h3>What is this app?</h3>
-          <p>
+          <Heading>What is this app?</Heading>
+          <Paragraph>
             This app is built to simplify your workflow and bring convenience to
             your everyday life. Whether you're managing tasks, tracking goals,
             or simply browsing through helpful resources, our app makes it easy.
-          </p>
+          </Paragraph>
         </Section>
 
         <Section>
-          <h4>Our Mission</h4>
-          <p>
+          <SubHeading>Our Mission</SubHeading>
+          <Paragraph>
             We aim to provide a simple, user-friendly platform for personal and
             professional growth. We believe in technology that empowers and
             supports people everywhere.
-          </p>
+          </Paragraph>
         </Section>
 
         <Section>
-          <h4>Version & Credits</h4>
-          <ul>
+          <SubHeading>Version & Credits</SubHeading>
+          <InfoList>
             <li>
               <strong>Version:</strong> 1.0.0
             </li>
             <li>
-              <strong>Developed by:</strong> Bohdan Yakubyak, Nazar Mocherniuk,
-              ...
+              <strong>Developed by:</strong> Bohdan Yakubyak, Tawfeeq
+              Mohammadpur, Hojhan Siavash Glolani
             </li>
             <li>
               <strong>Launched:</strong> 2025
             </li>
-          </ul>
+          </InfoList>
         </Section>
       </Content>
     </PageWrapper>
@@ -48,34 +48,56 @@ const AboutAppPage = () => {
 export default AboutAppPage;
 
 const PageWrapper = styled.div`
-  padding: 38px 0px;
+  padding: 40px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  color: var(--black);
 `;
 
 const Content = styled.section`
-  margin-top: 32px;
-
-  padding: 38px 0px;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 `;
 
 const Section = styled.section`
-  margin-bottom: 28px;
+  background-color: #ffffff;
+  padding: 24px 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+`;
 
-  h3,
-  h4 {
-    margin-bottom: 12px;
-  }
+const Heading = styled.h3`
+  font-size: 24px;
+  color: var(--black);
+  margin-bottom: 16px;
+`;
 
-  p {
+const SubHeading = styled.h4`
+  font-size: 20px;
+  color: var(--red);
+  margin-bottom: 14px;
+`;
+
+const Paragraph = styled.p`
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--grey);
+`;
+
+const InfoList = styled.ul`
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 8px;
+
+  li {
     font-size: 15px;
-    line-height: 1.6;
+    margin-bottom: 10px;
+    color: var(--grey);
   }
 
-  ul {
-    list-style-type: none;
-    padding-left: 0;
-    li {
-      margin-bottom: 8px;
-      font-size: 15px;
-    }
+  strong {
+    color: var(--black);
   }
 `;

@@ -8,17 +8,17 @@ const HelpSupportPage = () => {
       <BreadcrumbNavigation title="Help & Support" />
       <Content>
         <Section>
-          <h3>Need help with the app?</h3>
-          <p>
+          <Heading>Need help with the app?</Heading>
+          <Paragraph>
             We’re here to assist you. Whether you’re experiencing technical
             issues or just have general questions, you can reach out to us
             anytime.
-          </p>
+          </Paragraph>
         </Section>
 
         <Section>
-          <h4>Contact Support</h4>
-          <ul>
+          <SubHeading>Contact Support</SubHeading>
+          <InfoList>
             <li>
               <strong>Email:</strong> support@yourapp.com
             </li>
@@ -28,15 +28,15 @@ const HelpSupportPage = () => {
             <li>
               <strong>Hours:</strong> Mon–Fri, 9 AM to 6 PM (EST)
             </li>
-          </ul>
+          </InfoList>
         </Section>
 
         <Section>
-          <h4>Frequently Asked Questions</h4>
-          <p>
+          <SubHeading>Frequently Asked Questions</SubHeading>
+          <Paragraph>
             Coming soon... We’re building a full FAQ to help you get quick
             answers.
-          </p>
+          </Paragraph>
         </Section>
       </Content>
     </PageWrapper>
@@ -46,34 +46,55 @@ const HelpSupportPage = () => {
 export default HelpSupportPage;
 
 const PageWrapper = styled.div`
-  padding: 38px 0px;
+  padding: 40px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  color: var(--black);
 `;
 
 const Content = styled.section`
-  margin-top: 32px;
-
-  padding: 38px 0px;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 `;
 
 const Section = styled.article`
-  margin-bottom: 28px;
+  background: #fff;
+  padding: 24px 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+`;
 
-  h3,
-  h4 {
-    margin-bottom: 12px;
-  }
+const Heading = styled.h3`
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: var(--black);
+`;
 
-  p {
+const SubHeading = styled.h4`
+  font-size: 20px;
+  margin-bottom: 14px;
+  color: var(--red);
+`;
+
+const Paragraph = styled.p`
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--grey);
+`;
+
+const InfoList = styled.ul`
+  list-style-type: none;
+  padding-left: 0;
+
+  li {
     font-size: 15px;
-    line-height: 1.6;
+    margin-bottom: 10px;
+    color: var(--grey);
   }
 
-  ul {
-    list-style-type: none;
-    padding-left: 0;
-    li {
-      margin-bottom: 8px;
-      font-size: 15px;
-    }
+  strong {
+    color: var(--black);
   }
 `;

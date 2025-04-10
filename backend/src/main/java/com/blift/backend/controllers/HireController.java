@@ -2,6 +2,8 @@ package com.blift.backend.controllers;
 
 import com.blift.backend.dto.ConsultantResponse;
 import com.blift.backend.dto.HireRequestDTO;
+import com.blift.backend.dto.HireRequestResponseDTO;
+import com.blift.backend.dto.UserHireRequestResponseDTO;
 import com.blift.backend.entities.Consultant;
 import com.blift.backend.entities.HireRequest;
 import com.blift.backend.entities.HiredRCIC;
@@ -15,8 +17,9 @@ import com.blift.backend.validations.HireValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.stream.Collectors;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -106,5 +109,50 @@ public class HireController {
         return ResponseEntity.ok("Hire request declined.");
     }
 
+    @GetMapping("/hire-requests/{consultantId}")
+    public ResponseEntity<List<HireRequestResponseDTO>> getHireRequestsForRCIC(@PathVariable Long consultantId) {
+        Consultant rcic = consultantRepository.findById(consultantId)
+                .orElseThrow(() -> new ValidationException("Consultant not found."));
+
+        List<HireRequest> requests = hireRequestRepository.findByRcicId(rcic.getId());
+
+        List<HireRequestResponseDTO> response = requests.stream()
+                .map(req -> new HireRequestResponseDTO(
+                        req.getId(),
+                        req.getUser().getId(),
+                        req.getUser().getFullName(),
+                        req.getUser().getLocation(),
+                        req.getUser().getRegion(),
+                        Arrays.stream(req.getUser().getLanguages().split(","))
+                                .map(String::trim)
+                                .collect(Collectors.toList()),
+                        req.getStatus(),
+                        req.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/hire-requests/user/{userId}")
+    public ResponseEntity<List<UserHireRequestResponseDTO>> getHireRequestsByUser(@PathVariable Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ValidationException("User not found."));
+
+        List<HireRequest> requests = hireRequestRepository.findByUserId(user.getId());
+
+        List<UserHireRequestResponseDTO> response = requests.stream()
+                .map(req -> new UserHireRequestResponseDTO(
+                        req.getId(),
+                        req.getRcic().getId(),
+                        req.getRcic().getFullName(),
+                        req.getStatus(),
+                        req.getCreatedAt()
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
+    }
 
 }

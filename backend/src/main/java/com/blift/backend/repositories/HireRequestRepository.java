@@ -14,6 +14,7 @@ public interface HireRequestRepository extends JpaRepository<HireRequest, Long> 
 
     // Find all hire requests sent by a specific user
     List<HireRequest> findByUserId(Long userId);
+    List<HireRequest> findByUserIdAndStatus(Long userId, String status);
 
     boolean existsByUserIdAndRcicIdAndStatus(Long userId, Long rcicId, String status);
 
